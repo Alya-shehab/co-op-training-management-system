@@ -1,0 +1,785 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0B2545;--navy-light:#1A3A6B;--navy-mid:#1E4080;
+  --teal:#1D9E75;--teal-light:#E1F5EE;--teal-dark:#085041;
+  --amber:#EF9F27;--amber-bg:#FAEEDA;
+  --red:#E24B4A;--red-bg:#FCEBEB;
+  --bg:#F7F8FA;--white:#fff;
+  --text:#1a1a1a;--muted:#6B7280;--border:#E5E7EB;
+  --radius:10px;--radius-sm:6px;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl}
+
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.sidebar{background:var(--navy);color:#fff;display:flex;flex-direction:column;padding:0}
+.sidebar-logo{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:10px}
+.sidebar-logo .logo-icon{width:36px;height:36px;background:var(--teal);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
+.sidebar-logo span{font-size:13px;font-weight:600;color:#fff;line-height:1.3}
+.sidebar-logo small{font-size:11px;color:rgba(255,255,255,0.5);display:block}
+.sidebar-nav{padding:12px 8px;flex:1}
+.nav-section{margin-bottom:20px}
+.nav-section-title{font-size:10px;font-weight:600;color:rgba(255,255,255,0.4);padding:0 8px;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius-sm);cursor:pointer;font-size:13.5px;color:rgba(255,255,255,0.7);transition:all 0.15s;margin-bottom:2px;border:none;background:none;width:100%;text-align:right}
+.nav-item:hover{background:rgba(255,255,255,0.1);color:#fff}
+.nav-item.active{background:var(--teal);color:#fff}
+.nav-item i{font-size:17px;flex-shrink:0}
+.nav-badge{margin-right:auto;background:var(--amber);color:#4a2800;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+
+.sidebar-user{padding:14px 12px;border-top:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:10px}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
+.user-info{flex:1;min-width:0}
+.user-name{font-size:12.5px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:11px;color:rgba(255,255,255,0.5)}
+
+.main{display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-size:16px;font-weight:600;color:var(--navy)}
+.topbar-actions{display:flex;align-items:center;gap:10px}
+.topbar-search{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;font-size:13px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all 0.15s}
+.btn-primary{background:var(--teal);color:#fff}
+.btn-primary:hover{background:var(--teal-dark)}
+.btn-outline{background:var(--white);border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{background:var(--bg)}
+.btn-sm{padding:5px 12px;font-size:12px}
+
+.content{padding:24px;overflow-y:auto;flex:1}
+.page{display:none}
+.page.active{display:block}
+
+.page-header{margin-bottom:24px}
+.page-header h1{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.page-header p{font-size:13px;color:var(--muted)}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px}
+.stat-label{font-size:12px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.stat-label i{font-size:15px}
+.stat-value{font-size:26px;font-weight:700;color:var(--navy)}
+.stat-sub{font-size:11px;color:var(--teal);margin-top:4px;font-weight:500}
+
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-header h3{font-size:14px;font-weight:600;color:var(--navy)}
+.card-body{padding:0}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+
+table{width:100%;border-collapse:collapse}
+th{font-size:12px;font-weight:600;color:var(--muted);padding:10px 16px;text-align:right;background:var(--bg);border-bottom:1px solid var(--border)}
+td{font-size:13px;padding:11px 16px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#F9FAFB}
+
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-success{background:var(--teal-light);color:var(--teal-dark)}
+.badge-warning{background:var(--amber-bg);color:#4a2800}
+.badge-danger{background:var(--red-bg);color:#7a1f1e}
+.badge-info{background:#E6F1FB;color:#0C447C}
+.badge-gray{background:#F1EFE8;color:#444}
+
+.progress-track{background:var(--bg);border-radius:20px;height:6px;overflow:hidden}
+.progress-fill{background:var(--teal);height:100%;border-radius:20px;transition:width 0.5s}
+
+.progress-steps{display:flex;align-items:center;justify-content:space-between;margin:24px 0;position:relative}
+.progress-steps::before{content:'';position:absolute;top:16px;right:0;left:0;height:2px;background:var(--border);z-index:0}
+.progress-step{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1}
+.step-circle{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid var(--border);background:var(--white)}
+.step-circle.done{background:var(--teal);border-color:var(--teal);color:#fff}
+.step-circle.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.step-label{font-size:11px;color:var(--muted);white-space:nowrap}
+.step-label.active{color:var(--navy);font-weight:600}
+
+.form-group{margin-bottom:16px}
+.form-label{font-size:12.5px;font-weight:600;color:var(--navy);margin-bottom:6px;display:block}
+.form-control{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;color:var(--text);background:var(--white);outline:none}
+.form-control:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(29,158,117,0.1)}
+select.form-control{cursor:pointer}
+
+.star-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.star-row:last-child{border-bottom:none}
+.stars{display:flex;gap:3px;direction:ltr}
+.star{font-size:18px;cursor:pointer;color:#D3D1C7;transition:color 0.1s}
+.star.filled{color:var(--amber)}
+
+.alert-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.alert-item:last-child{border-bottom:none}
+.alert-icon{width:32px;height:32px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.alert-icon.warning{background:var(--amber-bg);color:#4a2800}
+.alert-icon.danger{background:var(--red-bg);color:#7a1f1e}
+.alert-icon.info{background:#E6F1FB;color:#0C447C}
+.alert-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.alert-sub{font-size:11.5px;color:var(--muted)}
+
+.student-row{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.12s}
+.student-row:last-child{border-bottom:none}
+.student-row:hover{background:var(--bg)}
+.stu-avatar{width:36px;height:36px;border-radius:50%;background:var(--navy-mid);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.stu-info{flex:1}
+.stu-name{font-size:13.5px;font-weight:600;margin-bottom:2px}
+.stu-meta{font-size:11.5px;color:var(--muted)}
+.stu-progress{width:120px;text-align:left}
+.stu-pct{font-size:11px;color:var(--muted);margin-bottom:4px;text-align:left}
+
+.login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 60%,#0d5a8e 100%);padding:24px}
+.login-card{background:var(--white);border-radius:16px;padding:36px 32px;width:100%;max-width:360px}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo .logo-big{width:56px;height:56px;background:var(--navy);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:18px;font-weight:900;color:#fff;font-style:italic}
+.login-logo h2{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.login-logo p{font-size:12px;color:var(--muted)}
+.login-tabs{display:flex;background:var(--bg);border-radius:var(--radius-sm);padding:3px;margin-bottom:22px;gap:3px}
+.login-tab{flex:1;padding:7px;text-align:center;font-size:12px;font-weight:600;border-radius:4px;cursor:pointer;color:var(--muted);transition:all 0.15s;border:none;background:none}
+.login-tab.active{background:var(--white);color:var(--navy);box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+
+.notif-dot{width:8px;height:8px;background:var(--red);border-radius:50%;display:inline-block;margin-right:4px}
+
+.report-file{display:flex;align-items:center;gap:12px;padding:10px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px}
+.file-icon{width:36px;height:36px;background:#E6F1FB;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:#0C447C;font-size:18px;flex-shrink:0}
+.file-info{flex:1}
+.file-name{font-size:13px;font-weight:500;margin-bottom:2px}
+.file-meta{font-size:11px;color:var(--muted)}
+.file-status{flex-shrink:0}
+
+.tab-bar{display:flex;border-bottom:2px solid var(--border);margin-bottom:20px;gap:0}
+.tab{padding:10px 18px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s}
+.tab.active{color:var(--navy);border-bottom-color:var(--teal);font-weight:600}
+
+.dash-welcome{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:var(--radius);padding:20px 24px;color:#fff;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+.dash-welcome h2{font-size:18px;font-weight:700;margin-bottom:4px}
+.dash-welcome p{font-size:13px;opacity:0.75}
+.dash-welcome .welcome-icon{font-size:48px;opacity:0.3}
+</style>
+
+<h2 class="sr-only">بروتوتايب نظام إدارة التدريب التعاوني - CTMS</h2>
+
+<div id="login-screen" class="login-page">
+<div class="login-card">
+  <div class="login-logo">
+    <div class="logo-big">IAU</div>
+    <h2>نظام إدارة التدريب التعاوني</h2>
+    <p>Coop Training Management System</p>
+  </div>
+  <div class="login-tabs">
+    <button class="login-tab active" onclick="setRole('student')">طالبة</button>
+    <button class="login-tab" onclick="setRole('supervisor')">مشرفة</button>
+    <button class="login-tab" onclick="setRole('admin')">مدير</button>
+  </div>
+  <div class="form-group">
+    <label class="form-label">البريد الجامعي</label>
+    <input class="form-control" type="email" value="s.khalid@iau.edu.sa" placeholder="example@iau.edu.sa">
+  </div>
+  <div class="form-group">
+    <label class="form-label">كلمة المرور</label>
+    <input class="form-control" type="password" value="••••••••">
+  </div>
+  <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;padding:10px" onclick="doLogin()">
+    <i class="ti ti-login" aria-hidden="true"></i> تسجيل الدخول
+  </button>
+  <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:14px;cursor:pointer">نسيت كلمة المرور؟</p>
+</div>
+</div>
+
+<div id="main-app" class="app" style="display:none">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">IAU</div>
+      <div><span>CTMS<small>نظام التدريب التعاوني</small></span></div>
+    </div>
+    <nav class="sidebar-nav" id="sidebar-nav"></nav>
+    <div class="sidebar-user" id="sidebar-user"></div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">لوحة التحكم</div>
+      <div class="topbar-actions">
+        <div class="topbar-search"><i class="ti ti-search" aria-hidden="true"></i> بحث...</div>
+        <button class="btn btn-outline btn-sm" style="position:relative">
+          <i class="ti ti-bell" aria-hidden="true"></i>
+          <span class="notif-dot" style="position:absolute;top:6px;right:6px"></span>
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="doLogout()">
+          <i class="ti ti-logout" aria-hidden="true"></i> خروج
+        </button>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- Student pages -->
+      <div class="page" id="page-dashboard">
+        <div class="dash-welcome">
+          <div>
+            <h2>أهلاً سارة خالد 👋</h2>
+            <p>مرحباً بك في نظام إدارة التدريب التعاوني</p>
+          </div>
+          <i class="ti ti-school welcome-icon" aria-hidden="true"></i>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label"><i class="ti ti-clock" aria-hidden="true"></i> حالة التدريب</div>
+            <div class="stat-value" style="font-size:18px;color:var(--teal)">قيد التدريب</div>
+            <div class="stat-sub">أسبوع 8 من 16</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label"><i class="ti ti-file-text" aria-hidden="true"></i> التقارير المُرسلة</div>
+            <div class="stat-value">7</div>
+            <div class="stat-sub">من أصل 16 تقرير</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label"><i class="ti ti-star" aria-hidden="true"></i> آخر تقييم</div>
+            <div class="stat-value" style="color:var(--amber)">4.2 ★</div>
+            <div class="stat-sub">ممتاز</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label"><i class="ti ti-bell" aria-hidden="true"></i> تنبيهات</div>
+            <div class="stat-value" style="color:var(--red)">2</div>
+            <div class="stat-sub">تقارير مطلوبة</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header"><h3>مسار التدريب</h3></div>
+          <div class="card-body" style="padding:20px 24px">
+            <div class="progress-steps">
+              <div class="progress-step">
+                <div class="step-circle done"><i class="ti ti-check" aria-hidden="true"></i></div>
+                <div class="step-label">التقديم</div>
+              </div>
+              <div class="progress-step">
+                <div class="step-circle done"><i class="ti ti-check" aria-hidden="true"></i></div>
+                <div class="step-label">القبول</div>
+              </div>
+              <div class="progress-step">
+                <div class="step-circle active">3</div>
+                <div class="step-label active">قيد التدريب</div>
+              </div>
+              <div class="progress-step">
+                <div class="step-circle">4</div>
+                <div class="step-label">التقييم</div>
+              </div>
+              <div class="progress-step">
+                <div class="step-circle">5</div>
+                <div class="step-label">الإنهاء</div>
+              </div>
+            </div>
+            <div style="margin-top:8px">
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px">
+                <span>التقدم الكلي</span><span>50%</span>
+              </div>
+              <div class="progress-track"><div class="progress-fill" style="width:50%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><h3><span class="notif-dot"></span>التنبيهات</h3></div>
+            <div class="card-body">
+              <div class="alert-item">
+                <div class="alert-icon warning"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+                <div><div class="alert-title">موعد تسليم التقرير الأسبوعي 8</div><div class="alert-sub">خلال 3 أيام - الأربعاء 22 مايو</div></div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon danger"><i class="ti ti-file-x" aria-hidden="true"></i></div>
+                <div><div class="alert-title">التقرير الأسبوعي 7 - يحتاج إعادة رفع</div><div class="alert-sub">رُفض من المشرفة - يرجى المراجعة</div></div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon info"><i class="ti ti-info-circle" aria-hidden="true"></i></div>
+                <div><div class="alert-title">تقييم جديد من المشرفة</div><div class="alert-sub">بتاريخ 14 مايو 2026</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>بيانات التدريب</h3></div>
+            <div class="card-body" style="padding:16px 18px">
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;color:var(--muted)">الشركة</span><span style="font-size:13px;font-weight:600">أرامكو السعودية</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;color:var(--muted)">المشرفة</span><span style="font-size:13px;font-weight:600">د. فاطمة العمري</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;color:var(--muted)">القسم</span><span style="font-size:13px;font-weight:600">تقنية المعلومات</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;color:var(--muted)">تاريخ البدء</span><span style="font-size:13px;font-weight:600">1 مارس 2026</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;color:var(--muted)">تاريخ الانتهاء</span><span style="font-size:13px;font-weight:600">30 يونيو 2026</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-reports">
+        <div class="page-header">
+          <h1>التقارير الأسبوعية</h1>
+          <p>رفع ومتابعة تقارير التدريب الأسبوعية</p>
+        </div>
+        <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center">
+          <button class="btn btn-primary" onclick="showUploadForm()">
+            <i class="ti ti-upload" aria-hidden="true"></i> رفع تقرير جديد
+          </button>
+          <span style="font-size:13px;color:var(--muted)">تم رفع 7 تقارير من أصل 16</span>
+        </div>
+        <div id="upload-form" style="display:none;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px">
+          <h3 style="font-size:14px;font-weight:600;margin-bottom:16px;color:var(--navy)">رفع تقرير أسبوعي جديد</h3>
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">رقم الأسبوع</label>
+              <select class="form-control"><option>الأسبوع 8</option><option>الأسبوع 9</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">تاريخ التقرير</label>
+              <input class="form-control" type="date" value="2026-05-19">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ملخص الأنشطة</label>
+            <textarea class="form-control" rows="3" placeholder="اكتبي ملخصاً لأنشطة الأسبوع..."></textarea>
+          </div>
+          <div style="border:2px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;margin-bottom:16px;cursor:pointer" onclick="this.style.borderColor='var(--teal)'">
+            <i class="ti ti-cloud-upload" style="font-size:32px;color:var(--muted)" aria-hidden="true"></i>
+            <p style="font-size:13px;color:var(--muted);margin-top:8px">اسحبي الملف هنا أو انقري للاختيار</p>
+            <p style="font-size:11px;color:var(--muted)">PDF أو Word - حجم أقصى 10MB</p>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-primary" onclick="submitReport()"><i class="ti ti-send" aria-hidden="true"></i> إرسال</button>
+            <button class="btn btn-outline" onclick="document.getElementById('upload-form').style.display='none'">إلغاء</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>سجل التقارير</h3></div>
+          <div class="card-body" style="padding:16px">
+            <div id="reports-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-evaluation">
+        <div class="page-header">
+          <h1>تقييماتي</h1>
+          <p>متابعة تقييمات المشرفة وملاحظاتها</p>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header">
+            <h3>التقييم الأخير - الأسبوع 6</h3>
+            <span class="badge badge-success">مكتمل</span>
+          </div>
+          <div class="card-body" style="padding:18px">
+            <div style="display:flex;gap:16px;margin-bottom:16px">
+              <div class="stat-card" style="flex:1;text-align:center">
+                <div class="stat-label" style="justify-content:center">التقييم الكلي</div>
+                <div class="stat-value" style="color:var(--amber);text-align:center">4.2 ★</div>
+              </div>
+              <div class="stat-card" style="flex:2">
+                <div class="stat-label">ملاحظات المشرفة</div>
+                <p style="font-size:13px;color:var(--text);line-height:1.6;margin-top:6px">سارة تُبدي جهداً ملحوظاً في المهام المطلوبة منها، وتتفاعل بشكل إيجابي مع الفريق. يُنصح بتطوير مهارات التوثيق والتقارير التقنية.</p>
+              </div>
+            </div>
+            <div style="border-top:1px solid var(--border);padding-top:16px">
+              <div class="star-row">
+                <span style="font-size:13px;font-weight:500">الحضور والالتزام</span>
+                <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span></div>
+              </div>
+              <div class="star-row">
+                <span style="font-size:13px;font-weight:500">المبادرة والإبداع</span>
+                <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span></div>
+              </div>
+              <div class="star-row">
+                <span style="font-size:13px;font-weight:500">الكفاءة التقنية</span>
+                <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span></div>
+              </div>
+              <div class="star-row">
+                <span style="font-size:13px;font-weight:500">العمل الجماعي</span>
+                <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span><span class="star">★</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Supervisor pages -->
+      <div class="page" id="page-students">
+        <div class="page-header">
+          <h1>الطالبات المُشرفة عليهن</h1>
+          <p>متابعة تقدم الطالبات ومراجعة تقاريرهن</p>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label"><i class="ti ti-users" aria-hidden="true"></i> إجمالي الطالبات</div><div class="stat-value">12</div></div>
+          <div class="stat-card"><div class="stat-label"><i class="ti ti-check" aria-hidden="true"></i> في التدريب</div><div class="stat-value" style="color:var(--teal)">10</div></div>
+          <div class="stat-card"><div class="stat-label"><i class="ti ti-file-alert" aria-hidden="true"></i> تقارير معلقة</div><div class="stat-value" style="color:var(--amber)">5</div></div>
+          <div class="stat-card"><div class="stat-label"><i class="ti ti-clock" aria-hidden="true"></i> بانتظار التقييم</div><div class="stat-value" style="color:var(--red)">3</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>قائمة الطالبات</h3>
+            <input class="form-control" style="width:200px;font-size:12px" placeholder="بحث عن طالبة...">
+          </div>
+          <div class="card-body" id="students-list"></div>
+        </div>
+      </div>
+
+      <div class="page" id="page-eval-form">
+        <div class="page-header">
+          <div style="display:flex;align-items:center;gap:12px">
+            <button class="btn btn-outline btn-sm" onclick="showPage('page-students')">
+              <i class="ti ti-arrow-right" aria-hidden="true"></i> رجوع
+            </button>
+            <div>
+              <h1>تقييم الطالبة: سارة خالد</h1>
+              <p>التقرير الأسبوعي 7 - أرامكو السعودية</p>
+            </div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><h3>نموذج التقييم</h3></div>
+            <div class="card-body" style="padding:16px 18px">
+              <div class="star-row">
+                <span style="font-size:13px;font-weight:500">الحضور والالتزام</span>
+                <div class="stars" id="s1">
+                  <span class="star" onclick="rate('s1',1)">★</span><span class="star" onclick="rate('s1',2)">★</span><span class="star" onclick="rate('s1',3)">★</span><span class="star" onclick="rate('s1',4)">★</span><span class="star" onclick="rate('s1',5)">★</span>
+                </div>
+              </div>
+              <div class="star-row">
+                <span style="font-size:13px;font-weight:500">المبادرة والإبداع</span>
+                <div class="stars" id="s2">
+                  <span class="star" onclick="rate('s2',1)">★</span><span class="star" onclick="rate('s2',2)">★</span><span class="star" onclick="rate('s2',3)">★</span><span class="star" onclick="rate('s2',4)">★</span><span class="star" onclick="rate('s2',5)">★</span>
+                </div>
+              </div>
+              <div class="star-row">
+                <span style="font-size:13px;font-weight:500">الكفاءة التقنية</span>
+                <div class="stars" id="s3">
+                  <span class="star" onclick="rate('s3',1)">★</span><span class="star" onclick="rate('s3',2)">★</span><span class="star" onclick="rate('s3',3)">★</span><span class="star" onclick="rate('s3',4)">★</span><span class="star" onclick="rate('s3',5)">★</span>
+                </div>
+              </div>
+              <div class="star-row">
+                <span style="font-size:13px;font-weight:500">العمل الجماعي</span>
+                <div class="stars" id="s4">
+                  <span class="star" onclick="rate('s4',1)">★</span><span class="star" onclick="rate('s4',2)">★</span><span class="star" onclick="rate('s4',3)">★</span><span class="star" onclick="rate('s4',4)">★</span><span class="star" onclick="rate('s4',5)">★</span>
+                </div>
+              </div>
+              <div style="margin-top:16px">
+                <label class="form-label">ملاحظات وتعليقات</label>
+                <textarea class="form-control" rows="4" placeholder="اكتبي ملاحظاتك هنا..."></textarea>
+              </div>
+              <div style="display:flex;gap:10px;margin-top:16px">
+                <button class="btn btn-primary" onclick="submitEval()"><i class="ti ti-check" aria-hidden="true"></i> حفظ التقييم</button>
+                <button class="btn btn-outline">حفظ مسودة</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>التقارير المرفوعة</h3></div>
+            <div class="card-body" style="padding:16px">
+              <div class="report-file">
+                <div class="file-icon"><i class="ti ti-file-text" aria-hidden="true"></i></div>
+                <div class="file-info"><div class="file-name">تقرير الأسبوع 7</div><div class="file-meta">2026-05-12 · 1.2MB</div></div>
+                <div class="file-status"><span class="badge badge-warning">قيد المراجعة</span></div>
+              </div>
+              <div class="report-file">
+                <div class="file-icon"><i class="ti ti-file-text" aria-hidden="true"></i></div>
+                <div class="file-info"><div class="file-name">تقرير الأسبوع 6</div><div class="file-meta">2026-05-05 · 0.9MB</div></div>
+                <div class="file-status"><span class="badge badge-success">مقبول</span></div>
+              </div>
+              <div class="report-file">
+                <div class="file-icon"><i class="ti ti-file-text" aria-hidden="true"></i></div>
+                <div class="file-info"><div class="file-name">تقرير الأسبوع 5</div><div class="file-meta">2026-04-28 · 1.1MB</div></div>
+                <div class="file-status"><span class="badge badge-danger">مرفوض</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin pages -->
+      <div class="page" id="page-manage-users">
+        <div class="page-header">
+          <h1>إدارة المستخدمين</h1>
+          <p>إضافة وتعديل وحذف المستخدمين</p>
+        </div>
+        <div style="display:flex;gap:12px;margin-bottom:20px">
+          <button class="btn btn-primary"><i class="ti ti-user-plus" aria-hidden="true"></i> إضافة مستخدم</button>
+          <button class="btn btn-outline"><i class="ti ti-download" aria-hidden="true"></i> تصدير Excel</button>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>قائمة المستخدمين</h3>
+            <input class="form-control" style="width:220px;font-size:12px" placeholder="بحث...">
+          </div>
+          <div class="card-body">
+            <table>
+              <thead>
+                <tr><th>الرقم</th><th>الاسم</th><th>الدور</th><th>الحالة</th><th>إجراءات</th></tr>
+              </thead>
+              <tbody>
+                <tr><td style="color:var(--muted);font-size:12px">2240000350</td><td style="font-weight:600">سارة خالد</td><td><span class="badge badge-info">طالبة</span></td><td><span class="badge badge-success">نشطة</span></td><td><button class="btn btn-outline btn-sm"><i class="ti ti-edit" aria-hidden="true"></i></button> <button class="btn btn-outline btn-sm" style="color:var(--red)"><i class="ti ti-trash" aria-hidden="true"></i></button></td></tr>
+                <tr><td style="color:var(--muted);font-size:12px">2240003551</td><td style="font-weight:600">رنا أحمد</td><td><span class="badge badge-info">طالبة</span></td><td><span class="badge badge-success">نشطة</span></td><td><button class="btn btn-outline btn-sm"><i class="ti ti-edit" aria-hidden="true"></i></button> <button class="btn btn-outline btn-sm" style="color:var(--red)"><i class="ti ti-trash" aria-hidden="true"></i></button></td></tr>
+                <tr><td style="color:var(--muted);font-size:12px">9010000122</td><td style="font-weight:600">د. فاطمة العمري</td><td><span class="badge badge-warning">مشرفة</span></td><td><span class="badge badge-success">نشطة</span></td><td><button class="btn btn-outline btn-sm"><i class="ti ti-edit" aria-hidden="true"></i></button> <button class="btn btn-outline btn-sm" style="color:var(--red)"><i class="ti ti-trash" aria-hidden="true"></i></button></td></tr>
+                <tr><td style="color:var(--muted);font-size:12px">9010000088</td><td style="font-weight:600">د. نورة الزهراني</td><td><span class="badge badge-warning">مشرفة</span></td><td><span class="badge badge-gray">غير نشطة</span></td><td><button class="btn btn-outline btn-sm"><i class="ti ti-edit" aria-hidden="true"></i></button> <button class="btn btn-outline btn-sm" style="color:var(--red)"><i class="ti ti-trash" aria-hidden="true"></i></button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-assign">
+        <div class="page-header">
+          <h1>توزيع المشرفات</h1>
+          <p>تعيين المشرفات للطالبات</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>إسناد مشرفة جديدة</h3></div>
+          <div class="card-body" style="padding:20px">
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">اختاري الطالبة</label>
+                <select class="form-control">
+                  <option>سارة خالد - 2240000350</option>
+                  <option>رنا أحمد - 2240003551</option>
+                  <option>لمى القحطاني - 2240001380</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">اختاري المشرفة</label>
+                <select class="form-control">
+                  <option>د. فاطمة العمري</option>
+                  <option>د. نورة الزهراني</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-primary"><i class="ti ti-check" aria-hidden="true"></i> تأكيد التوزيع</button>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="card-header"><h3>التوزيع الحالي</h3></div>
+          <div class="card-body">
+            <table>
+              <thead><tr><th>الطالبة</th><th>المشرفة</th><th>الشركة</th><th>الحالة</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:600">سارة خالد</td><td>د. فاطمة العمري</td><td>أرامكو السعودية</td><td><span class="badge badge-success">قيد التدريب</span></td></tr>
+                <tr><td style="font-weight:600">رنا أحمد</td><td>د. فاطمة العمري</td><td>STC</td><td><span class="badge badge-success">قيد التدريب</span></td></tr>
+                <tr><td style="font-weight:600">لمى القحطاني</td><td>د. نورة الزهراني</td><td>وزارة التعليم</td><td><span class="badge badge-warning">في الانتظار</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-reports-admin">
+        <div class="page-header">
+          <h1>التقارير والإحصائيات</h1>
+          <p>نظرة شاملة على أداء النظام</p>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label">إجمالي الطالبات</div><div class="stat-value">45</div><div class="stat-sub">+5 هذا الفصل</div></div>
+          <div class="stat-card"><div class="stat-label">في التدريب</div><div class="stat-value" style="color:var(--teal)">38</div><div class="stat-sub">84% معدل القبول</div></div>
+          <div class="stat-card"><div class="stat-label">متوسط التقييم</div><div class="stat-value" style="color:var(--amber)">4.1 ★</div><div class="stat-sub">ممتاز</div></div>
+          <div class="stat-card"><div class="stat-label">التقارير المرفوعة</div><div class="stat-value">312</div><div class="stat-sub">92% معدل الإتمام</div></div>
+        </div>
+        <div style="display:flex;gap:12px;margin-bottom:20px">
+          <button class="btn btn-primary"><i class="ti ti-file-export" aria-hidden="true"></i> تصدير PDF</button>
+          <button class="btn btn-outline"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i> تصدير Excel</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>ملخص أداء الطالبات</h3></div>
+          <div class="card-body">
+            <table>
+              <thead><tr><th>الطالبة</th><th>الشركة</th><th>التقارير</th><th>التقييم</th><th>الحالة</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:600">سارة خالد</td><td>أرامكو</td><td>7/16</td><td><span style="color:var(--amber);font-weight:700">4.2 ★</span></td><td><span class="badge badge-success">قيد التدريب</span></td></tr>
+                <tr><td style="font-weight:600">رنا أحمد</td><td>STC</td><td>9/16</td><td><span style="color:var(--amber);font-weight:700">4.5 ★</span></td><td><span class="badge badge-success">قيد التدريب</span></td></tr>
+                <tr><td style="font-weight:600">لمى القحطاني</td><td>وزارة التعليم</td><td>3/16</td><td><span style="color:var(--amber);font-weight:700">3.8 ★</span></td><td><span class="badge badge-warning">في الانتظار</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--navy);color:#fff;padding:12px 24px;border-radius:var(--radius);font-size:13px;font-weight:500;transition:all 0.3s;opacity:0;z-index:9999;display:flex;align-items:center;gap:8px"></div>
+
+<script>
+var currentRole='student';
+var currentPage='page-dashboard';
+
+var navConfigs={
+  student:[
+    {section:'الطالبة',items:[
+      {icon:'ti-layout-dashboard',label:'لوحة التحكم',page:'page-dashboard'},
+      {icon:'ti-file-text',label:'تقاريري',page:'page-reports'},
+      {icon:'ti-star',label:'تقييماتي',page:'page-evaluation'},
+    ]}
+  ],
+  supervisor:[
+    {section:'المشرفة',items:[
+      {icon:'ti-layout-dashboard',label:'لوحة التحكم',page:'page-dashboard-sup'},
+      {icon:'ti-users',label:'طالباتي',page:'page-students',badge:'3'},
+      {icon:'ti-clipboard-check',label:'التقييمات',page:'page-eval-form'},
+    ]}
+  ],
+  admin:[
+    {section:'الإدارة',items:[
+      {icon:'ti-layout-dashboard',label:'لوحة التحكم',page:'page-dashboard'},
+      {icon:'ti-users',label:'إدارة المستخدمين',page:'page-manage-users'},
+      {icon:'ti-user-check',label:'توزيع المشرفات',page:'page-assign'},
+      {icon:'ti-chart-bar',label:'التقارير',page:'page-reports-admin'},
+    ]}
+  ]
+};
+
+var userInfo={
+  student:{name:'سارة خالد',role:'طالبة - CS سنة 3',initials:'سخ'},
+  supervisor:{name:'د. فاطمة العمري',role:'مشرفة أكاديمية',initials:'فع'},
+  admin:{name:'المدير العام',role:'مدير النظام',initials:'مد'},
+};
+
+var pageTitles={
+  'page-dashboard':'لوحة التحكم',
+  'page-reports':'التقارير الأسبوعية',
+  'page-evaluation':'تقييماتي',
+  'page-students':'الطالبات',
+  'page-eval-form':'نموذج التقييم',
+  'page-manage-users':'إدارة المستخدمين',
+  'page-assign':'توزيع المشرفات',
+  'page-reports-admin':'التقارير والإحصائيات',
+};
+
+function setRole(r){
+  currentRole=r;
+  document.querySelectorAll('.login-tab').forEach(function(t,i){
+    t.classList.toggle('active',['student','supervisor','admin'][i]===r);
+  });
+}
+
+function doLogin(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('main-app').style.display='grid';
+  buildNav();
+  buildUser();
+  var firstPage=navConfigs[currentRole][0].items[0].page;
+  if(firstPage==='page-dashboard-sup') firstPage='page-students';
+  showPage(firstPage);
+}
+
+function doLogout(){
+  document.getElementById('main-app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  currentRole='student';
+  document.querySelectorAll('.login-tab').forEach(function(t,i){t.classList.toggle('active',i===0)});
+}
+
+function buildNav(){
+  var nav=document.getElementById('sidebar-nav');
+  nav.innerHTML='';
+  navConfigs[currentRole].forEach(function(sec){
+    var s=document.createElement('div');
+    s.className='nav-section';
+    s.innerHTML='<div class="nav-section-title">'+sec.section+'</div>';
+    sec.items.forEach(function(item){
+      var b=document.createElement('button');
+      b.className='nav-item';
+      b.setAttribute('data-page',item.page);
+      var badge=item.badge?'<span class="nav-badge">'+item.badge+'</span>':'';
+      b.innerHTML='<i class="ti '+item.icon+'" aria-hidden="true"></i>'+item.label+badge;
+      b.onclick=function(){
+        var p=item.page==='page-dashboard-sup'?'page-students':item.page;
+        showPage(p);
+      };
+      s.appendChild(b);
+    });
+    nav.appendChild(s);
+  });
+}
+
+function buildUser(){
+  var u=userInfo[currentRole];
+  document.getElementById('sidebar-user').innerHTML=
+    '<div class="user-avatar">'+u.initials+'</div>'+
+    '<div class="user-info"><div class="user-name">'+u.name+'</div><div class="user-role">'+u.role+'</div></div>';
+}
+
+function showPage(pageId){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+  var el=document.getElementById(pageId);
+  if(el) el.classList.add('active');
+  currentPage=pageId;
+  document.getElementById('topbar-title').textContent=pageTitles[pageId]||'';
+  document.querySelectorAll('.nav-item').forEach(function(b){
+    b.classList.toggle('active',b.getAttribute('data-page')===pageId);
+  });
+  if(pageId==='page-students') buildStudentsList();
+  if(pageId==='page-reports') buildReportsList();
+}
+
+function buildStudentsList(){
+  var students=[
+    {name:'سارة خالد',major:'علوم حاسب',company:'أرامكو',progress:50,status:'قيد التدريب',badge:'badge-success'},
+    {name:'رنا أحمد',major:'علوم حاسب',company:'STC',progress:65,status:'قيد التدريب',badge:'badge-success'},
+    {name:'لمى القحطاني',major:'نظم معلومات',company:'وزارة التعليم',progress:25,status:'في الانتظار',badge:'badge-warning'},
+    {name:'هدى الشمري',major:'علوم حاسب',company:'stc pay',progress:80,status:'قيد التدريب',badge:'badge-success'},
+  ];
+  var html='';
+  students.forEach(function(s){
+    var ini=s.name.split(' ').map(function(w){return w[0]}).join('');
+    html+='<div class="student-row" onclick="showPage(\'page-eval-form\')">'
+      +'<div class="stu-avatar">'+ini+'</div>'
+      +'<div class="stu-info"><div class="stu-name">'+s.name+'</div><div class="stu-meta">'+s.major+' · '+s.company+'</div></div>'
+      +'<div class="stu-progress"><div class="stu-pct">'+s.progress+'%</div><div class="progress-track" style="width:120px"><div class="progress-fill" style="width:'+s.progress+'%"></div></div></div>'
+      +'<span class="badge '+s.badge+'">'+s.status+'</span>'
+      +'</div>';
+  });
+  document.getElementById('students-list').innerHTML=html;
+}
+
+function buildReportsList(){
+  var reports=[
+    {week:'الأسبوع 7',date:'2026-05-12',status:'قيد المراجعة',badge:'badge-warning'},
+    {week:'الأسبوع 6',date:'2026-05-05',status:'مقبول',badge:'badge-success'},
+    {week:'الأسبوع 5',date:'2026-04-28',status:'مرفوض',badge:'badge-danger'},
+    {week:'الأسبوع 4',date:'2026-04-21',status:'مقبول',badge:'badge-success'},
+    {week:'الأسبوع 3',date:'2026-04-14',status:'مقبول',badge:'badge-success'},
+    {week:'الأسبوع 2',date:'2026-04-07',status:'مقبول',badge:'badge-success'},
+    {week:'الأسبوع 1',date:'2026-03-31',status:'مقبول',badge:'badge-success'},
+  ];
+  var html='';
+  reports.forEach(function(r){
+    html+='<div class="report-file">'
+      +'<div class="file-icon"><i class="ti ti-file-text" aria-hidden="true"></i></div>'
+      +'<div class="file-info"><div class="file-name">تقرير '+r.week+'</div><div class="file-meta">'+r.date+'</div></div>'
+      +'<div class="file-status"><span class="badge '+r.badge+'">'+r.status+'</span></div>'
+      +'</div>';
+  });
+  document.getElementById('reports-list').innerHTML=html;
+}
+
+function showUploadForm(){
+  var f=document.getElementById('upload-form');
+  f.style.display=f.style.display==='none'?'block':'none';
+}
+
+function submitReport(){
+  document.getElementById('upload-form').style.display='none';
+  showToast('✅ تم رفع التقرير بنجاح');
+}
+
+function submitEval(){
+  showToast('✅ تم حفظ التقييم بنجاح');
+  setTimeout(function(){showPage('page-students')},1500);
+}
+
+function rate(id,n){
+  var stars=document.querySelectorAll('#'+id+' .star');
+  stars.forEach(function(s,i){s.classList.toggle('filled',i<n)});
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.opacity='1';
+  t.style.transform='translateX(-50%) translateY(0)';
+  setTimeout(function(){
+    t.style.opacity='0';
+    t.style.transform='translateX(-50%) translateY(60px)';
+  },3000);
+}
+</script>
