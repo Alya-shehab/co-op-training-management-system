@@ -2,9 +2,11 @@
 
 ## 🚀 Live Prototype
 
-Try the interactive prototype here:
-
 👉 https://alya-shehab.github.io/co-op-training-management-system/prototype/ctms_prototype.html
+
+## 🎥 Live Demo
+
+👉 https://alya-shehab.github.io/co-op-training-management-system/demo/
 
 ---
 
