@@ -1,7 +1,7 @@
 # Coop Training Management System (CTMS) 🎓
 
 <p align="center">
-  <img src="image/logo.png" width="180">
+  <img src="image/logo.jpeg" width="180">
 </p>
 
 ## Live Prototype
