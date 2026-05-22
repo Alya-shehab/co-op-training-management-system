@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CO-OP S Working Website</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+body{background:#eef4f8;color:#182b3a}
+.hidden{display:none!important}
+button,input,textarea,select{font-family:inherit}
+button{cursor:pointer;border:0;border-radius:8px;font-weight:bold}
+.app{min-height:100vh}
+.logo-img{
+width:170px;
+height:auto;
+object-fit:contain;
+background:transparent;
+border:none;
+box-shadow:none;
+mix-blend-mode:multiply;
+}
+.logo-img.small{
+width:120px;
+height:auto;
+object-fit:contain;
+background:transparent;
+mix-blend-mode:multiply;
+}
+.login-page{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px;
+  background:linear-gradient(110deg,rgba(255,255,255,.65),rgba(255,255,255,.92)),
+  url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1500&q=80");
+  background-size:cover;background-position:center
+}
+.login-card{width:410px;background:white;border-radius:20px;padding:34px;box-shadow:0 20px 60px rgba(0,0,0,.18);text-align:center}
+.logo-wrap{display:flex;justify-content:center;margin-bottom:8px}
+.login-card h2{margin-bottom:10px;color:#36103d}
+.login-card p{color:#697887;font-size:13px;margin-bottom:14px}
+.field{width:100%;padding:13px;margin:8px 0;border:1px solid #cfd8df;border-radius:10px;background:#fbfdff}
+.primary{background:#36103d;color:white;padding:12px 18px}
+.secondary{background:#e7edf2;color:#263849;padding:12px 18px}
+.danger{background:#c42034;color:white;padding:10px 14px}
+.green{background:#e5166a;color:white;padding:10px 14px}
+.login-card .primary{width:100%;margin-top:10px}
+.demo{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:15px}
+.demo button{background:#fde8f2;padding:9px;font-size:12px;color:#36103d}
+.error{color:#c42034!important;font-weight:bold;margin-top:10px}
+.topbar{height:72px;background:white;box-shadow:0 4px 18px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:space-between;padding:0 25px;position:sticky;top:0;z-index:10}
+.brand{display:flex;align-items:center;gap:12px}
+.brand b{color:#36103d}
+.brand small{display:block;color:#758391;font-weight:normal;margin-top:3px}
+.user{display:flex;align-items:center;gap:12px}
+.layout{display:grid;grid-template-columns:230px 1fr;gap:20px;max-width:1250px;margin:20px auto;padding:0 15px}
+.sidebar{background:white;border-radius:18px;padding:14px;box-shadow:0 8px 30px rgba(0,0,0,.06);height:max-content;position:sticky;top:92px}
+.nav{display:block;width:100%;background:transparent;color:#415366;text-align:left;padding:14px 15px;margin:4px 0;border-radius:12px}
+.nav.active,.nav:hover{background:#36103d;color:white}
+.page{display:grid;gap:18px}
+.card{background:white;border-radius:18px;padding:22px;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+.hero{display:flex;justify-content:space-between;gap:15px;align-items:center}
+.hero h1{color:#36103d;font-size:30px;margin-bottom:6px}
+.muted{color:#6a7b8b;font-size:14px}
+.badge{display:inline-block;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:bold}
+.badge.ok{background:#d9f7e6;color:#08783c}.badge.wait{background:#fff0c2;color:#805900}.badge.bad{background:#ffe0e6;color:#a8172f}.badge.blue{background:#fde8f2;color:#b01056}
+.timeline{display:grid;grid-template-columns:auto 1fr auto 1fr auto 1fr auto;align-items:center;margin-top:15px}
+.step{text-align:center;font-weight:bold;color:#6b7785}
+.circle{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;margin:auto;background:#d5dee6;color:#667}
+.done .circle,.current .circle{background:#36103d;color:white}.current .circle{background:#e5166a;box-shadow:0 0 0 10px rgba(229,22,106,.16)}
+.bar{height:4px;background:#d5dee6;border-radius:10px}.bar.done{background:#36103d}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.stat h2{color:#36103d;font-size:28px;margin-top:8px}
+.twocol{display:grid;grid-template-columns:1fr 1.25fr;gap:18px}
+.alert{padding:13px;border-radius:12px;margin-top:10px;font-weight:bold;font-size:14px}.warning{background:#fff1c2}.success{background:#ddf8e8}.info{background:#fde8f2}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #e6edf2}
+th{color:#637282;font-size:13px}
+.upload-box{border:2px dashed #e5166a;border-radius:18px;background:#fff8fc;text-align:center;padding:35px;margin-top:15px}
+.upload-box.drag{background:#fde8f2;border-color:#36103d}
+.upload-box h3{color:#36103d;margin:10px}
+.student-list{display:grid;gap:10px}
+.student-item{background:#f9fbfd;border:1px solid #dde7ee;border-radius:12px;padding:13px;display:flex;justify-content:space-between;align-items:center}
+.student-item.active{border-color:#36103d;background:#fff0f7}
+.rating-row{display:grid;grid-template-columns:160px 1fr;align-items:center;margin:12px 0}
+.stars span{font-size:28px;color:#cbd3dc;cursor:pointer}.stars span.active{color:#e5166a}
+textarea{resize:vertical;min-height:95px}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+.toast{position:fixed;right:22px;bottom:22px;background:#36103d;color:white;padding:14px 18px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:30;font-weight:bold}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:grid;place-items:center;z-index:20;padding:20px}
+.modal-card{width:min(420px,95vw);background:white;border-radius:18px;padding:25px;box-shadow:0 20px 70px rgba(0,0,0,.3)}
+.search-row{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.search{width:250px}
+
+
+.fancy-logo{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:12px;
+margin-bottom:12px;
+}
+
+.logo-icon{
+width:54px;
+height:54px;
+border-radius:18px;
+display:grid;
+place-items:center;
+font-size:34px;
+font-weight:900;
+color:white;
+background:linear-gradient(135deg,#36103d,#e5166a,#ff9f1c);
+box-shadow:0 10px 25px rgba(229,22,106,.28);
+}
+
+.text-logo h1{
+font-size:38px;
+font-weight:900;
+letter-spacing:1px;
+line-height:1;
+margin-bottom:6px;
+background:linear-gradient(135deg,#36103d,#e5166a,#ff9f1c);
+-webkit-background-clip:text;
+background-clip:text;
+color:transparent;
+}
+
+.text-logo h1 span{
+letter-spacing:2px;
+}
+
+.text-logo h1 b{
+color:#e5166a;
+}
+
+.text-logo p{
+font-size:10px;
+letter-spacing:2.5px;
+color:#6c5a72;
+text-transform:uppercase;
+font-weight:700;
+}
+
+.brand .fancy-logo{
+justify-content:flex-start;
+margin-bottom:0;
+gap:9px;
+}
+
+.brand .logo-icon{
+width:42px;
+height:42px;
+border-radius:14px;
+font-size:26px;
+box-shadow:0 8px 18px rgba(229,22,106,.20);
+}
+
+.brand .text-logo h1{
+font-size:23px;
+margin-bottom:3px;
+}
+
+.brand .text-logo p{
+font-size:7px;
+letter-spacing:1.5px;
+}
+
+
+.page-logo{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:10px;
+}
+
+.mini-wow{
+width:38px;
+height:38px;
+border-radius:12px;
+display:grid;
+place-items:center;
+font-size:24px;
+font-weight:900;
+color:white;
+background:linear-gradient(135deg,#36103d,#e5166a,#ff9f1c);
+box-shadow:0 8px 18px rgba(229,22,106,.25);
+}
+
+.page-logo h3{
+margin:0;
+font-size:18px;
+background:linear-gradient(135deg,#36103d,#e5166a,#ff9f1c);
+-webkit-background-clip:text;
+background-clip:text;
+color:transparent;
+font-weight:900;
+}
+
+.page-logo p{
+margin:0;
+font-size:8px;
+letter-spacing:1.8px;
+text-transform:uppercase;
+color:#7a6b77;
+font-weight:700;
+}
+
+@media(max-width:850px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:static;display:grid;grid-template-columns:repeat(2,1fr)}
+  .grid3,.twocol{grid-template-columns:1fr}
+  .timeline{grid-template-columns:1fr;gap:8px}.bar{width:4px;height:24px;margin:auto}
+  .hero,.topbar{align-items:flex-start;flex-direction:column;height:auto;padding:15px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<section id="loginPage" class="login-page">
+  <div class="login-card">
+    <div class="text-logo fancy-logo">
+  <div class="logo-icon">∞</div>
+  <div>
+    <h1><span>CO</span>-OP <b>S</b></h1>
+    <p>Collaborative Education System</p>
+  </div>
+</div>
+    <h2>تسجيل الدخول</h2>
+    <p>Collaborative Education System</p>
+    <input id="email" class="field" type="email" placeholder="University Email">
+    <input id="password" class="field" type="password" placeholder="Password">
+    <button class="primary" onclick="login()">Sign In</button>
+    <p id="loginError" class="error"></p>
+    <div class="demo">
+      <button onclick="fillDemo('student@iau.edu.sa')">Student</button>
+      <button onclick="fillDemo('supervisor@iau.edu.sa')">Supervisor</button>
+      <button onclick="fillDemo('admin@iau.edu.sa')">Admin</button>
+    </div>
+    
+  </div>
+</section>
+
+<section id="sitePage" class="hidden">
+  <header class="topbar">
+    <div class="brand">
+      
+      <div><b>CO-OP S | Collaborative Education System</b><small id="roleText">Student Portal</small></div>
+    </div>
+    <div class="user"><span id="welcome">Welcome</span><button class="danger" onclick="logout()">Logout</button></div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <button class="nav active" data-page="student" onclick="showPage('student')">Student Dashboard</button>
+      <button class="nav" data-page="upload" onclick="showPage('upload')">Upload Documents</button>
+      <button class="nav" data-page="supervisor" onclick="showPage('supervisor')">Supervisor Evaluation</button>
+      <button class="nav" data-page="admin" onclick="showPage('admin')">Admin Dashboard</button>
+    </aside>
+
+    <main>
+      <section id="student" class="page">
+        <div class="card hero">
+          <div>
+            
+<div class="page-logo">
+  <div class="mini-wow">∞</div>
+  <div>
+    <h3>CO-OP S</h3>
+    <p>Collaborative Education System</p>
+  </div>
+</div>
+<h1>Student Dashboard</h1>
+            <p class="muted">Track training workflow, alerts, and weekly report status.</p>
+          </div>
+          <span class="badge ok">Under Training</span>
+        </div>
+
+        <div class="card">
+          <h3>Timeline / Progress Bar</h3>
+          <div class="timeline">
+            <div class="step done"><div class="circle">✓</div><p>Applied</p></div>
+            <div class="bar done"></div>
+            <div class="step done"><div class="circle">✓</div><p>Accepted</p></div>
+            <div class="bar done"></div>
+            <div class="step current"><div class="circle">●</div><p>Under Training</p></div>
+            <div class="bar"></div>
+            <div class="step"><div class="circle">○</div><p>Completed</p></div>
+          </div>
+        </div>
+
+        <div class="grid3">
+          <div class="card stat"><p class="muted">Training Status</p><h2>On Track</h2></div>
+          <div class="card stat"><p class="muted">Uploaded Reports</p><h2 id="reportCount">3</h2></div>
+          <div class="card stat"><p class="muted">Next Deadline</p><h2>Report 5</h2></div>
+        </div>
+
+        <div class="twocol">
+          <div class="card">
+            <h3>Alerts</h3>
+            <div class="alert warning">⚠ Upcoming Deadline: Weekly Report 5</div>
+            <div class="alert success">✅ Weekly Report 3 Accepted</div>
+            <div class="alert info">ℹ Supervisor feedback available soon</div>
+          </div>
+
+          <div class="card">
+            <h3>Weekly Reports</h3>
+            <table>
+              <thead><tr><th>Name</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody id="reportsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="upload" class="page hidden">
+        <div class="card">
+          
+<div class="page-logo">
+  <div class="mini-wow">∞</div>
+  <div>
+    <h3>CO-OP S</h3>
+    <p>Collaborative Education System</p>
+  </div>
+</div>
+<h1>Upload Documents</h1>
+          <p class="muted">Upload weekly/final reports. Accepted formats: PDF, DOC, DOCX.</p>
+          <div id="drop" class="upload-box">
+            <h3>Drag & Drop Report Here</h3>
+            <p class="muted">or choose a file</p><br>
+            <input id="fileInput" type="file" accept=".pdf,.doc,.docx">
+            <button class="primary" onclick="uploadFile()">Upload Report</button>
+            <p id="uploadMsg" style="margin-top:12px;font-weight:bold"></p>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Document List</h3>
+          <table>
+            <thead><tr><th>File</th><th>Type</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="docsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="supervisor" class="page hidden">
+        <div class="twocol">
+          <div class="card">
+            
+<div class="page-logo">
+  <div class="mini-wow">∞</div>
+  <div>
+    <h3>CO-OP S</h3>
+    <p>Collaborative Education System</p>
+  </div>
+</div>
+<h1>Assigned Students</h1>
+            <div id="studentList" class="student-list"></div>
+          </div>
+
+          <div class="card">
+            
+<div class="page-logo">
+  <div class="mini-wow">∞</div>
+  <div>
+    <h3>CO-OP S</h3>
+    <p>Collaborative Education System</p>
+  </div>
+</div>
+<h1>Evaluation Form</h1>
+            <p class="muted" id="selectedStudent">Student Name: Sara Khaled</p><br>
+            <div id="ratingGrid"></div>
+            <textarea id="feedback" class="field" placeholder="Feedback & Remarks"></textarea>
+            <div class="actions">
+              <button class="secondary" onclick="saveDraft()">Save Draft</button>
+              <button class="primary" onclick="openModal()">Submit Evaluation</button>
+            </div>
+            <p id="evalMsg" style="margin-top:10px;color:green;font-weight:bold"></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin" class="page hidden">
+        <div class="card hero">
+          <div>
+            
+<div class="page-logo">
+  <div class="mini-wow">∞</div>
+  <div>
+    <h3>CO-OP S</h3>
+    <p>Collaborative Education System</p>
+  </div>
+</div>
+<h1>Admin Dashboard</h1>
+            <p class="muted">Manage users, assign supervisors, and export training reports.</p>
+          </div>
+          <button class="green" onclick="exportReport()">Export Report</button>
+        </div>
+
+        <div class="grid3">
+          <div class="card stat"><p class="muted">Students</p><h2>124</h2></div>
+          <div class="card stat"><p class="muted">Supervisors</p><h2>18</h2></div>
+          <div class="card stat"><p class="muted">Compliance</p><h2>91%</h2></div>
+        </div>
+
+        <div class="card">
+          <div class="search-row">
+            <h3>Manage Users</h3>
+            <div>
+              <input id="searchUser" class="field search" placeholder="Search user..." oninput="renderUsers()">
+              <button class="green" onclick="addUser()">Add New User</button>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Actions</th></tr></thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</section>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <h2>Confirm Evaluation</h2>
+    <p class="muted" style="margin-top:8px">Are you sure you want to submit the final evaluation?</p>
+    <div class="actions">
+      <button class="secondary" onclick="closeModal()">Cancel</button>
+      <button class="primary" onclick="confirmEvaluation()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+</div>
+
+<script>
+let currentRole = "";
+let reports = JSON.parse(localStorage.getItem("reports")) || [
+  {name:"Weekly Report 1", date:"2026-05-23", status:"Accepted"},
+  {name:"Weekly Report 2", date:"2026-05-24", status:"Pending Review"},
+  {name:"Weekly Report 5", date:"2026-05-25", status:"Missing"}
+];
+
+let users = [
+  {id:"2240003551", name:"Reem Alanzi", role:"Student"},
+  {id:"2240001622", name:"Raghad Alqahtani", role:"Student"},
+  {id:"10240022", name:"Dr. Noura", role:"Supervisor"},
+  {id:"10000001", name:"Admin User", role:"Admin"}
+];
+
+let criteria = ["Attendance","Initiative","Excellence","Technical Skills","Soft Skills"];
+let selectedRatings = {};
+
+function fillDemo(email){
+  document.getElementById("email").value=email;
+  document.getElementById("password").value="123456";
+}
+
+function login(){
+  const email=document.getElementById("email").value.toLowerCase().trim();
+  const pass=document.getElementById("password").value.trim();
+  if(pass!=="123456" || !email.includes("@")){
+    document.getElementById("loginError").textContent="Invalid email or password";
+    return;
+  }
+  if(email.includes("supervisor")) currentRole="supervisor";
+  else if(email.includes("admin")) currentRole="admin";
+  else currentRole="student";
+
+  document.getElementById("loginPage").classList.add("hidden");
+  document.getElementById("sitePage").classList.remove("hidden");
+  document.getElementById("welcome").textContent="Welcome, " + (currentRole==="student"?"Sara Khaled":currentRole==="supervisor"?"Dr. Noura":"Admin User");
+  document.getElementById("roleText").textContent=currentRole.toUpperCase()+" Portal";
+
+  applyRoleAccess();
+  renderAll();
+  showPage(currentRole==="admin"?"admin":currentRole==="supervisor"?"supervisor":"student");
+  toast("Login successful");
+}
+
+function applyRoleAccess(){
+  document.querySelectorAll(".nav").forEach(n=>n.style.display="block");
+  if(currentRole==="student"){
+    document.querySelector('[data-page="supervisor"]').style.display="none";
+    document.querySelector('[data-page="admin"]').style.display="none";
+  }
+  if(currentRole==="supervisor"){
+    document.querySelector('[data-page="admin"]').style.display="none";
+  }
+}
+
+function logout(){location.reload()}
+
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+  document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
+  const nav=document.querySelector(`[data-page="${id}"]`);
+  if(nav) nav.classList.add("active");
+}
+
+function statusBadge(s){
+  if(s.includes("Accepted")) return `<span class="badge ok">${s}</span>`;
+  if(s.includes("Pending")) return `<span class="badge wait">${s}</span>`;
+  return `<span class="badge bad">${s}</span>`;
+}
+
+function renderReports(){
+  document.getElementById("reportCount").textContent=reports.filter(r=>r.status!=="Missing").length;
+  document.getElementById("reportsBody").innerHTML=reports.map(r=>`<tr><td>${r.name}</td><td>${r.date}</td><td>${statusBadge(r.status)}</td></tr>`).join("");
+  document.getElementById("docsBody").innerHTML=reports.map((r,i)=>`
+  <tr><td>${r.name}</td><td>${r.name.includes("Final")?"Final":"Weekly"}</td><td>${statusBadge(r.status)}</td>
+  <td><button class="secondary" onclick="resubmit(${i})">Re-upload</button></td></tr>`).join("");
+}
+
+function uploadFile(){
+  const file=document.getElementById("fileInput").files[0];
+  if(!file){document.getElementById("uploadMsg").textContent="⚠ Please choose a file first";return}
+  if(!/\.(pdf|doc|docx)$/i.test(file.name)){document.getElementById("uploadMsg").textContent="❌ Unsupported file format";return}
+  reports.unshift({name:file.name,date:new Date().toISOString().slice(0,10),status:"Pending Review"});
+  localStorage.setItem("reports",JSON.stringify(reports));
+  renderReports();
+  document.getElementById("uploadMsg").textContent="✅ File uploaded successfully";
+  toast("Report uploaded");
+}
+
+function resubmit(i){
+  reports[i].status="Pending Review";
+  localStorage.setItem("reports",JSON.stringify(reports));
+  renderReports();
+  toast("Document re-uploaded");
+}
+
+function renderStudents(){
+  const names=["Sara Khaled","Reem Alanzi","Lama Almutairi","Jory Ibrahim"];
+  document.getElementById("studentList").innerHTML=names.map((n,i)=>`
+  <div class="student-item ${i===0?'active':''}" onclick="selectStudent(this,'${n}')"><b>${n}</b><span class="badge blue">View</span></div>`).join("");
+}
+
+function selectStudent(el,n){
+  document.querySelectorAll(".student-item").forEach(x=>x.classList.remove("active"));
+  el.classList.add("active");
+  document.getElementById("selectedStudent").textContent="Student Name: "+n;
+}
+
+function renderRatings(){
+  document.getElementById("ratingGrid").innerHTML=criteria.map(c=>`
+  <div class="rating-row"><b>${c}</b><div class="stars" data-c="${c}">
+  ${[1,2,3,4,5].map(v=>`<span onclick="rate(this,${v})">★</span>`).join("")}</div></div>`).join("");
+}
+
+function rate(star,value){
+  const parent=star.parentElement;
+  selectedRatings[parent.dataset.c]=value;
+  [...parent.children].forEach((s,i)=>s.classList.toggle("active",i<value));
+}
+
+function saveDraft(){document.getElementById("evalMsg").textContent="Draft saved successfully";toast("Draft saved")}
+function openModal(){document.getElementById("modal").classList.remove("hidden")}
+function closeModal(){document.getElementById("modal").classList.add("hidden")}
+function confirmEvaluation(){closeModal();document.getElementById("evalMsg").textContent="✅ Evaluation submitted successfully";toast("Evaluation submitted")}
+
+function renderUsers(){
+  const q=(document.getElementById("searchUser")?.value||"").toLowerCase();
+  document.getElementById("usersBody").innerHTML=users.filter(u=>(u.id+u.name+u.role).toLowerCase().includes(q)).map(u=>`
+  <tr><td>${u.id}</td><td>${u.name}</td><td>${u.role}</td><td>✏️ 🗑️ 👁️</td></tr>`).join("");
+}
+
+function addUser(){
+  users.unshift({id:Math.floor(Math.random()*900000)+100000,name:"New Student",role:"Student"});
+  renderUsers();
+  toast("New user added");
+}
+
+function exportReport(){toast("Report exported successfully")}
+
+function toast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;t.classList.remove("hidden");
+  setTimeout(()=>t.classList.add("hidden"),2200);
+}
+
+function renderAll(){renderReports();renderStudents();renderRatings();renderUsers()}
+</script>
+</body>
+</html>
