@@ -1,9 +1,10 @@
 # Coop Training Management System (CTMS) 🎓
 
-> Prototype and demo for a university cooperative training management system.
+## 🚀 Prototype
 
-![Status](https://img.shields.io/badge/Prototype-Completed-success)
-![Demo](https://img.shields.io/badge/Demo-Available-blue)
+Open the interactive prototype here:
+
+[CTMS Prototype](prototype/ctms_prototype.html)
 
 ---
 
