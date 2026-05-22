@@ -1,6 +1,10 @@
 # Coop Training Management System (CTMS) 🎓
 
-## 🚀 Live Prototype
+<p align="center">
+  <img src="image/logo.png" width="180">
+</p>
+
+## Live Prototype
 
 👉 https://alya-shehab.github.io/co-op-training-management-system/prototype/ctms_prototype.html
 
