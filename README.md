@@ -8,7 +8,7 @@
 
 👉 https://alya-shehab.github.io/co-op-training-management-system/prototype/ctms_prototype.html
 
-## 🎥 Live Demo
+## Live Demo
 
 👉 https://alya-shehab.github.io/co-op-training-management-system/demo/
 
@@ -24,18 +24,18 @@ The platform helps improve communication, report management, training follow-up,
 
 ## User Roles
 
-### 👩‍🎓 Student
+### Student
 - Upload weekly reports
 - Track training progress
 - View evaluations and feedback
 - Receive notifications
 
-### 👩‍🏫 Supervisor
+### Supervisor
 - Review student reports
 - Submit evaluations
 - Monitor student performance
 
-### 👨‍💼 Admin
+### Admin
 - Manage users
 - Assign supervisors
 - View reports and statistics
@@ -79,12 +79,12 @@ The platform helps improve communication, report management, training follow-up,
 
 ---
 
-## 🎥 Demo
+## Demo
 
 The prototype and demo files are included in this repository.
 
 ---
 
-## 📌 Project Status
+## Project Status
 
 Completed as part of a university coursework project.
